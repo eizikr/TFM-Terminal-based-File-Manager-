@@ -57,6 +57,31 @@ int main(int argc, char *argv[]){
             selected_index = 0;
             
         }
+
+        if ( ch == KEY_F(2) ){
+                
+            if (file_list != NULL) {
+
+                char *selected_name = get_item(file_list, selected_index)->name;
+
+                struct stat file_stat;
+                if (lstat(selected_name, &file_stat) == 0 && S_ISREG(file_stat.st_mode)) {
+                    view_file(selected_name);
+                }
+            }
+        }
+
+        if (ch == KEY_F(8)){
+            char *selected_name = get_item(file_list, selected_index)->name;
+            remove_file(selected_name);
+            file_list = change_dir(file_list, ".", hidden_flag);
+        }
+
+        if (ch == 'c'){
+            char *selected_name = get_item(file_list, selected_index)->name;
+            rename_item(selected_name);
+            file_list = change_dir(file_list, ".", hidden_flag);
+        }
         draw_file_list(file_list, selected_index);
 
     }
@@ -65,6 +90,7 @@ int main(int argc, char *argv[]){
     endwin();
     return NO_ERR;
 }
+
 
 
 file_item_t* change_dir(file_item_t* list, char* path, bool hidden_flag){
@@ -81,3 +107,4 @@ file_item_t* change_dir(file_item_t* list, char* path, bool hidden_flag){
 
     return read_directory(hidden_flag);
 }
+
